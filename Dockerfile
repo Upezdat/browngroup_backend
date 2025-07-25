@@ -1,34 +1,31 @@
-# Base image
-FROM node:18.8-alpine AS base
+# base stage
+FROM node:18.8-alpine as base
 
-# Builder image
-FROM base AS builder
-WORKDIR /app
+# build stage
+FROM base as builder
+WORKDIR /home/node/app
 
-# Copy only necessary files for installing dependencies and building
-COPY package*.json yarn.lock tsconfig.json payload.config.ts ./
+COPY package*.json ./
+COPY yarn.lock ./
+COPY tsconfig.json ./
 COPY src ./src
 
-# Install all dependencies and build
 RUN yarn install
 RUN yarn build
 
-# Runtime image
-FROM base AS runtime
-WORKDIR /app
-
+# runtime stage
+FROM base as runtime
 ENV NODE_ENV=production
-ENV PAYLOAD_CONFIG_PATH=dist/payload.config.js
+ENV PAYLOAD_CONFIG_PATH=dist/src/payload.config.js
 
-# Copy only what's needed for production
-COPY package*.json yarn.lock ./
+WORKDIR /home/node/app
+
+COPY package*.json ./
+COPY yarn.lock ./
 RUN yarn install --production
 
-# Copy build output from builder stage
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/build ./build
+COPY --from=builder /home/node/app/dist ./dist
+COPY --from=builder /home/node/app/build ./build
 
 EXPOSE 3000
-
-# Start server
 CMD ["node", "dist/server.js"]
