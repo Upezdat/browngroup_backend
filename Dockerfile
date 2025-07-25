@@ -9,7 +9,7 @@ COPY package*.json ./
 COPY yarn.lock ./
 COPY tsconfig.json ./
 COPY src ./src
-COPY payload.config.ts ./
+COPY src/payload.config.ts ./payload.config.ts
 
 ENV YARN_IGNORE_ENGINES=true
 RUN yarn install
