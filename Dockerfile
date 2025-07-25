@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY package.json yarn.lock tsconfig.json ./
 COPY src ./src
-COPY payload.config.ts ./
+COPY src/payload.config.ts ./src/
 
 RUN yarn install --frozen-lockfile
 RUN yarn build
