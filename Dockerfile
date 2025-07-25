@@ -22,7 +22,6 @@ COPY --from=builder /app/dist ./dist
 
 ENV NODE_ENV=production
 ENV PAYLOAD_CONFIG_PATH=dist/payload.config.js
-
 EXPOSE 3000
 
-CMD ["node", "./dist/server.js"]
+CMD ["yarn", "start"]
