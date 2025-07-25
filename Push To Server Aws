@@ -1,0 +1,17 @@
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' \
+-e "ssh -i brawn-cms-dev.pem" \
+. ubuntu@ec2-3-111-149-144.ap-south-1.compute.amazonaws.com:~/app
+
+ssh -i "brawn-cms-dev.pem" ubuntu@ec2-3-111-149-144.ap-south-1.compute.amazonaws.com
+
+
+<!-- PRODUCTION -->
+
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' \
+-e "ssh -i brawn-production.pem" \
+. ubuntu@ec2-13-232-30-18.ap-south-1.compute.amazonaws.com:~/app
+
+ssh -i brawn-production.pem ubuntu@ec2-13-232-30-18.ap-south-1.compute.amazonaws.com
+
+mongodb+srv://brawnroot:L7QrDCDfXAqdgDRM@brawnwebroot.4t3zr.mongodb.net/
+mongodb+srv://brawnroot:L7QrDCDfXAqdgDRM@brawnwebroot.4t3zr.mongodb.net/?retryWrites=true&w=majority&appName=brawnWebRoot
