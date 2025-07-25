@@ -1,32 +1,28 @@
-FROM node:18-alpine AS base
+# Step 1: Build Stage
+FROM node:18-alpine AS builder
 
-# ---------------- Build Stage ---------------- #
-FROM base AS builder
-WORKDIR /home/node/app
+WORKDIR /app
 
-COPY package.json yarn.lock ./
-COPY tsconfig.json ./
-COPY payload.config.ts ./
+COPY package.json yarn.lock tsconfig.json ./
 COPY src ./src
-
-ENV YARN_IGNORE_ENGINES=true
+COPY payload.config.ts ./
 
 RUN yarn install --frozen-lockfile
 RUN yarn build
 
-# ---------------- Runtime Stage ---------------- #
-FROM base AS runtime
-WORKDIR /home/node/app
+# Step 2: Runtime Stage
+FROM node:18-alpine
+
+WORKDIR /app
 
 COPY package.json yarn.lock ./
-RUN yarn install --production --frozen-lockfile
+RUN yarn install --frozen-lockfile --production
 
-COPY --from=builder /home/node/app/dist ./dist
-COPY --from=builder /home/node/app/build ./build
+COPY --from=builder /app/dist ./dist
 
 ENV NODE_ENV=production
 ENV PAYLOAD_CONFIG_PATH=dist/payload.config.js
 
 EXPOSE 3000
 
-CMD ["node", "./dist/server.js"]
+CMD ["node", "dist/server.js"]
